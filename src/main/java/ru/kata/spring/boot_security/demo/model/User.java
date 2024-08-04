@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import java.util.Collection;
 import java.util.Set;
 
@@ -18,6 +19,7 @@ public class User implements UserDetails {
 
     @Column(unique = true, nullable = false)
     private String username;
+    @Column(nullable = false)
     private String password;
 
     @ManyToMany
@@ -26,6 +28,8 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
 
+    @Email
+    @Column(unique = true, nullable = false)
     private String email;
     private int yearOfBirth;
 

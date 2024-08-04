@@ -74,7 +74,10 @@ public class UserServiceImp implements UserService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username);
         if (user == null) {
-            throw new UsernameNotFoundException(String.format("No user found with username '%s'", username));
+            user = userRepository.findByEmail(username);
+            if (user == null) {
+                throw new UsernameNotFoundException(String.format("No user found with username '%s'", username));
+            }
         }
         return user;
     }
