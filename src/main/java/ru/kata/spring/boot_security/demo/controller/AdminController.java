@@ -1,14 +1,14 @@
 package ru.kata.spring.boot_security.demo.controller;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -23,54 +23,35 @@ public class AdminController {
         this.roleService = roleService;
     }
 
-    @GetMapping(value = "/users")
-    public String printUsers(ModelMap model) {
-        model.addAttribute("userList", userService.listUsers());
-        model.addAttribute("roleList", roleService.findAll());
-        return "/admin/users";
+    @GetMapping()
+    public String getAdminPanel(Model model, Principal principal) {
+        model.addAttribute("allUsers", userService.listUsers());
+        model.addAttribute("authUser", (User) userService.loadUserByUsername(principal.getName()));
+        model.addAttribute("newUser", new User());
+        model.addAttribute("roles", roleService.findAll());
+        model.addAttribute("activeTable", "usersTable");
+        return "admin";
     }
 
-    @GetMapping("/newUser")
-    public String newUser(ModelMap model) {
-        model.addAttribute("user", new User());
-        model.addAttribute("roleList", roleService.findAll());
-        return "/admin/newUser";
+    @PostMapping("/update")
+    public String updateUser(@ModelAttribute("updateUser") @Valid User updateUser,
+//                             @RequestParam("id") Long id,
+                             @RequestParam("roles") List<Long> roles) {
+        userService.update(updateUser, updateUser.getId(), roles);
+        return "redirect:/admin";
     }
 
-    @PostMapping("/newUser")
-    public String addUser(@ModelAttribute("user") @Valid User user,
-                          BindingResult bindingResult,
-                          @RequestParam("roles") List<Long> roles) {
-        if (bindingResult.hasErrors()) {
-            return "/admin/users";
-        }
-        userService.save(user, roles);
-        return "redirect:/admin/users";
-    }
-
-    @PostMapping("/deleteUser")
+    @PostMapping("/delete")
     public String deleteUser(@RequestParam("id") Long id) {
         userService.delete(id);
-        return "redirect:/admin/users";
+        return "redirect:/admin";
     }
 
-    @GetMapping("/editUser")
-    public String editUser(ModelMap model, @RequestParam("id") Long id) {
-        model.addAttribute("user", userService.getById(id));
-        model.addAttribute("roleList", roleService.findAll());
-        return "/admin/editUser";
-    }
-
-    @PostMapping("/editUser")
-    public String editUser(@ModelAttribute("user") @Valid User user,
-                           BindingResult bindingResult,
-                           @RequestParam("id") Long id,
-                           @RequestParam("roles") List<Long> roles) {
-        if (bindingResult.hasErrors()) {
-            return "/admin/editUser";
-        }
-        userService.update(user, id, roles);
-        return "redirect:/admin/users";
+    @PostMapping()
+    public String addUser(@ModelAttribute("newUser") @Valid User newUser,
+                          @RequestParam("roles") List<Long> roles) {
+        userService.save(newUser, roles);
+        return "redirect:/admin";
     }
 
 }

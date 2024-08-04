@@ -19,10 +19,10 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/showData")
+    @GetMapping()
     public String userPage(Principal principal, ModelMap model) {
         User user = (User) userService.loadUserByUsername(principal.getName());
         model.addAttribute("user", user);
-        return "/user/showData";
+        return "user";
     }
 }
