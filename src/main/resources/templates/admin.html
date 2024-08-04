@@ -182,7 +182,7 @@
                                                                                                                th:value="${user.getUsername()}"
                                                                                                                name="username"
                                                                                                                class="form-control"
-                                                                                                               id="userName"/>
+                                                                                                               id="userName" required/>
                                                                                                     </div>
                                                                                                     <div class="mb-3">
                                                                                                         <label for="yearOfBirth"
@@ -206,7 +206,7 @@
                                                                                                                th:value="${user.getEmail()}"
                                                                                                                name="email"
                                                                                                                class="form-control"
-                                                                                                               id="email"/>
+                                                                                                               id="email" required/>
                                                                                                     </div>
                                                                                                     <div class="mb-3">
                                                                                                         <label for="password"
@@ -218,7 +218,7 @@
                                                                                                                th:value="${user.getPassword()}"
                                                                                                                name="password"
                                                                                                                class="form-control"
-                                                                                                               id="password"/>
+                                                                                                               id="password" required/>
                                                                                                     </div>
                                                                                                     <label for="rolesEdit"
                                                                                                            class="form-label fw-bold mb-0">Role</label>
@@ -359,7 +359,7 @@
                                                                                                         style="box-shadow: none; border-color: gray; background-color: rgba(186,186,186,0.85);">
                                                                                                     <option th:text="${#strings.replace(
                                                                                                     (#strings.replace(
-                                                                                                    (#strings.replace(roles, 'ROLE_', '') + ' '),'[','')),']','')}">
+                                                                                                    (#strings.replace(user.getAuthorities(), 'ROLE_', '') + ' '),'[','')),']','')}">
                                                                                                     </option>
                                                                                                 </select>
                                                                                                 <br/>
@@ -424,7 +424,7 @@
                                                                 <input type="text" class="form-control"
                                                                        th:placeholder="'UserName'"
                                                                        th:field="*{username}"
-                                                                       id="usernameNewUser"/>
+                                                                       id="usernameNewUser" required/>
                                                                 <br/>
                                                                 <label for="emailNewUser" class="form-label"
                                                                        style="display: flex; justify-content: center;">
@@ -436,7 +436,7 @@
                                                                 <input type="email" class="form-control"
                                                                        th:placeholder="'Email'"
                                                                        th:field="*{email}"
-                                                                       id="emailNewUser">
+                                                                       id="emailNewUser" required>
                                                                 <br/>
                                                                 <label for="passwordNewUser"
                                                                        class="form-label"
@@ -448,7 +448,7 @@
                                                                 <input type="password" class="form-control"
                                                                        th:placeholder="'Password'"
                                                                        th:field="*{password}"
-                                                                       id="passwordNewUser"/>
+                                                                       id="passwordNewUser" required/>
                                                                 <br/>
                                                                 <label for="YearOfBirthNewUser" class="form-label"
                                                                        style="display: flex; justify-content: center;">
@@ -471,7 +471,7 @@
                                                                         id="rolesNewUser"
                                                                         size="2"
                                                                         multiple="multiple"
-                                                                        name="roles">
+                                                                        name="roles" required>
                                                                     <option th:each="role : ${roles}"
                                                                             th:value="${role.getId()}"
                                                                             th:text="${#strings.replace(role.getName(), 'ROLE_', '')}">
