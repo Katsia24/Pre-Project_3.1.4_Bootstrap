@@ -19,28 +19,31 @@ public class UserServiceImp implements UserService {
 
     private final UserRepository userRepository;
     private final RoleService roleService;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    public UserServiceImp(UserRepository userRepository, RoleService roleService) {
+    public UserServiceImp(UserRepository userRepository, RoleService roleService, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = userRepository;
         this.roleService = roleService;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-    public PasswordEncoder getPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+//    public PasswordEncoder getPasswordEncoder() {
+//        return new BCryptPasswordEncoder();
+//    }
 
     @Override
     @Transactional
     public void save(User user, List<Long> roles) {
         User savedUser = userRepository.save(user);
-        savedUser.setPassword(getPasswordEncoder().encode(user.getPassword()));
+        savedUser.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         List<Role> savedRoles = roleService.findAllById(roles);
         savedUser.setRoles(new HashSet<>(savedRoles));
         userRepository.save(savedUser);
     }
 
     @Override
+    @Transactional
     public void delete(long id) {
         userRepository.deleteById(id);
     }
@@ -50,7 +53,7 @@ public class UserServiceImp implements UserService {
     public void update(User user, Long id, List<Long> roles) {
         User savedUser = userRepository.getById(id);
         savedUser.setUsername(user.getUsername());
-        savedUser.setPassword(getPasswordEncoder().encode(user.getPassword()));
+        savedUser.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         savedUser.setEmail(user.getEmail());
         savedUser.setYearOfBirth(user.getYearOfBirth());
         List<Role> savedRoles = roleService.findAllById(roles);

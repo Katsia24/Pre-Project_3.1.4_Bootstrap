@@ -1,6 +1,13 @@
 package ru.kata.spring.boot_security.demo.service;
 
-import ru.kata.spring.boot_security.demo.repository.RoleRepository;
+import ru.kata.spring.boot_security.demo.model.Role;
 
-public interface RoleService extends RoleRepository {
+import java.util.List;
+
+public interface RoleService {
+    List<Role> findAllById(Iterable<Long> longs);
+
+    <S extends Role> S save(S entity);
+
+    List<Role> findAll();
 }
